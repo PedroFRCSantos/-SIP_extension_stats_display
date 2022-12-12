@@ -1,4 +1,4 @@
-Description: Allows the SIP program to save log to DB, usefull to statistics
+Description: Allows the SIP to make statistics from BD
 Copyright 2022
 Author: Pedro Santos
 Email:
@@ -8,7 +8,7 @@ Requirements:
 
 ##### List all plugin files below preceded by a blank line [file_name.ext path] relative to SIP directory #####
 
-db_logger.py plugins
-db_logger.html templates
-db_logger.json data (generated)
-db_logger.manifest plugins/manifests
+stats_display.py plugins
+stats_display.html templates
+stats_display.json data (generated)
+stats_display.manifest plugins/manifests
