@@ -64,7 +64,30 @@ class settings(ProtectedPage):
     """Load an html page for entering cli_control commands"""
 
     def GET(self):
-        return template_render.stats_display(statsDisplayDef)
+        # Check if DB logger is active
+        global gv
+        dbLogActive = False
+        for testName in gv.plugin_menu:
+            if testName[1] == "/dblog":
+                dbLogActive = True
+
+        if dbLogActive:
+            from db_logger import estimate_number_of_turn_on_by_month
+
+            turnOnByMothStats = estimate_number_of_turn_on_by_month()
+        else:
+            turnOnByMothStats = {}
+
+        stringX = ""
+        for key in turnOnByMothStats:
+            stringX = stringX +" "+ str(key.replace('-', '')) +","
+
+        stringY = ""
+        for key in turnOnByMothStats:
+            stringY = stringY +", "+ str(turnOnByMothStats[key])
+        stringY = stringY[2:]
+
+        return template_render.stats_display(turnOnByMothStats, stringX, stringY)
 
 
 class settings_json(ProtectedPage):

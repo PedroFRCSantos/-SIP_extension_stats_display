@@ -1,22 +1,82 @@
-$def with(statsDisplayDef)
+$def with(statsDisplayDef, stringX, stringY)
 
 $var title: $_(u'Statistics Display')
 $var page: stats_display
 
+<script src="static/scripts/chart.js"></script>
 
 <style>
-	.columnName {
-		text-align: center;
-	}
+    .columnName {
+        text-align: center;
+    }
+
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
 </style>
 
 <div id="plugin">
-	<!--     <div class="title">Command Line Control -->
-	<!--     <button class="execute" id="docButton" type="button" >$_('Help')</button> -->
-	<!--     </div> -->
-	<div>
-		<p>Display statistics.</p>
-	</div>
+    <!--     <div class="title">Command Line Control -->
+    <!--     <button class="execute" id="docButton" type="button" >$_('Help')</button> -->
+    <!--     </div> -->
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Number Turn On</th>
+        </tr>
 
-	<br /><br />
+        $for key in statsDisplayDef:
+        <tr>
+            <td>${key}</td>
+            <td>${statsDisplayDef[key]}</td>
+        </tr>
+    </table>
+
+    <br />
+    <br />
+
+    <script>
+        const labels = [${stringX}];
+
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'Number of turn on',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [${stringY}],
+            }]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {}
+        };
+    </script>
+    <div>
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+    <script>
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+    </script>
+
+    <br /><br />
 </div>
