@@ -16,15 +16,15 @@ $var page: stats_display
         width: 100%;
     }
 
-    td, th {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-    }
+	td, th {
+		border: 1px solid #00ff00;
+		text-align: left;
+		padding: 8px;
+	}
 
-    tr:nth-child(even) {
-        background-color: #dddddd;
-    }
+	tr:nth-child(even) {
+		background-color: #00ff00;
+	}
 </style>
 
 <div id="plugin">
@@ -54,14 +54,14 @@ $var page: stats_display
             labels: labels,
             datasets: [{
                 label: 'Number of turn on',
-                backgroundColor: 'rgb(255, 99, 132)',
+				backgroundColor: 'rgb(0, 255, 0)',
                 borderColor: 'rgb(255, 99, 132)',
                 data: [${stringY}],
             }]
         };
 
         const config = {
-            type: 'line',
+            type: 'bar',
             data: data,
             options: {}
         };
@@ -78,5 +78,5 @@ $var page: stats_display
         );
     </script>
 
-    <br /><br />
+    <br />
 </div>

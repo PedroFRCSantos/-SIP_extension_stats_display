@@ -1,0 +1,101 @@
+$def with(rawValves, listOfValves, rawValveId, minYear, minMonth, maxYear, maxMonth, currentYear, currentMonth)
+
+$var title: $_(u'Statistics Display raw valves')
+$var page: stats_display_raw_valves
+
+<script>
+	jQuery(document).ready(function () {
+		jQuery("button#buttonChangeValves").click(function () {
+			window.location = "/statrawval";
+		});
+	});
+</script>
+
+<style>
+	.columnName {
+		text-align: center;
+	}
+
+	table {
+		font-family: arial, sans-serif;
+		border-collapse: collapse;
+		width: 100%;
+	}
+
+	td, th {
+		border: 1px solid #00ff00;
+		text-align: left;
+		padding: 8px;
+	}
+
+	tr:nth-child(even) {
+		background-color: #00ff00;
+	}
+</style>
+
+<div id="plugin">
+	<form action="./statrawval">
+		<select name="valveId">
+			<option value="0">Select Valves for Stats</option>
+			$for currValve in listOfValves:
+				$if currValve[0] == rawValveId:
+					<option value="${currValve[0]}" selected="selected">${currValve[1]}</option>
+				$else:
+					<option value="${currValve[0]}">${currValve[1]}</option>
+		</select>
+
+		Show stats from
+
+		<select name="yearMin">
+			$for i in range(2020, currentYear + 1):
+				$if i == minYear:
+					<option value="${i}" selected="selected">${i}</option>
+				$else:
+					<option value="${i}">${i}</option>
+		</select>
+
+		<select name="monthMin">
+			$for i in range(1, 12 + 1):
+				$if i == minMonth:
+					<option value="${i}" selected="selected">${i}</option>
+				$else:
+					<option value="${i}">${i}</option>
+		</select>
+
+		To
+
+		<select name="yearMax">
+			$for i in range(2020, currentYear + 1):
+				$if i == maxYear:
+					<option value="${i}" selected="selected">${i}</option>
+				$else:
+					<option value="${i}">${i}</option>
+		</select>
+
+		<select name="monthMax">
+			$for i in range(1, 12 + 1):
+				$if i == maxMonth:
+					<option value="${i}" selected="selected">${i}</option>
+				$else:
+					<option value="${i}">${i}</option>
+		</select>
+
+		<button id="buttonChangeValves">Reload</button>
+	</form>
+
+	<br />
+
+	<table>
+		<tr>
+			<th>Date:</th>
+			<th>Time Active</th>
+		</tr>
+		$for curr in rawValves:
+			<tr>
+				<td>${curr}</td>
+				<td>${rawValves[str(curr)]}</td>
+			</tr>
+	</table>
+
+	<br />
+</div>

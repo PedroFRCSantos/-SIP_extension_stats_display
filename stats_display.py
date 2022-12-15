@@ -7,6 +7,7 @@ from __future__ import print_function
 import json
 import subprocess
 import time
+import datetime
 
 # local module imports
 from blinker import signal
@@ -23,6 +24,7 @@ urls.extend(
         u"/statset", u"plugins.stats_display.settings",
         u"/statjson", u"plugins.stats_display.settings_json",
         u"/statupdate", u"plugins.stats_display.update",
+        u"/statrawval", u"plugins.stats_display.raw_valves_stats",
     ]
 )
 # fmt: on
@@ -59,17 +61,97 @@ zones.connect(on_zone_change)
 # Web pages:                                                                   #
 ################################################################################
 
+def check_if_db_logger_active():
+    # Check if DB logger is active
+    global gv
+    dbLogActive = False
+    for testName in gv.plugin_menu:
+        if testName[1] == "/dblog":
+            dbLogActive = True
+
+    return dbLogActive
+
+class raw_valves_stats(ProtectedPage):
+    """Load an html page for entering cli_control commands"""
+
+    def GET(self):
+        rawValvesData = []
+
+        qdict = web.input()
+
+        dbLogActive = check_if_db_logger_active()
+
+        if dbLogActive:
+            from db_logger import get_list_of_valves
+            from db_logger import estimate_valve_turnon_by_month
+
+            listOfValves = get_list_of_valves()
+
+            rawValveId = 0
+            qdict = web.input()
+            if u"valveId" in qdict:
+                try:
+                    rawValveId = int(qdict[u"valveId"])
+                    if rawValveId < 0:
+                        rawValveId = 0
+                except ValueError:
+                    pass
+
+            minYear = datetime.datetime.now().year - 1
+            minMonth = datetime.datetime.now().month + 1
+            if minMonth > 12:
+                minMonth  = 1
+                minYear = minYear + 1
+
+            maxYear = datetime.datetime.now().year
+            maxMonth = datetime.datetime.now().month
+
+            if u"yearMin" in qdict:
+                try:
+                    minYear = int(qdict[u"yearMin"])
+                    if minYear < 0:
+                        minYear = 0
+                except ValueError:
+                    pass
+
+            if u"monthMin" in qdict:
+                try:
+                    minMonth = int(qdict[u"monthMin"])
+                    if minMonth < 0:
+                        minMonth = 0
+                except ValueError:
+                    pass
+
+            if u"yearMax" in qdict:
+                try:
+                    maxYear = int(qdict[u"yearMax"])
+                    if maxYear < 0:
+                        maxYear = 0
+                except ValueError:
+                    pass
+
+            if u"monthMax" in qdict:
+                try:
+                    maxMonth = int(qdict[u"monthMax"])
+                    if maxMonth < 0:
+                        maxMonth = 0
+                except ValueError:
+                    pass
+
+            if minYear > maxYear or (minYear == maxYear and minMonth > maxMonth):
+                minYear = maxYear
+                minMonth = maxMonth
+
+            rawValvesData = estimate_valve_turnon_by_month(rawValveId, minYear, minMonth, maxYear, maxMonth)
+
+        return template_render.stats_display_raw_valves(rawValvesData, listOfValves, rawValveId, minYear, minMonth, maxYear, maxMonth, datetime.datetime.now().year, datetime.datetime.now().month)
 
 class settings(ProtectedPage):
     """Load an html page for entering cli_control commands"""
 
     def GET(self):
         # Check if DB logger is active
-        global gv
-        dbLogActive = False
-        for testName in gv.plugin_menu:
-            if testName[1] == "/dblog":
-                dbLogActive = True
+        dbLogActive = check_if_db_logger_active()
 
         if dbLogActive:
             from db_logger import estimate_number_of_turn_on_by_month
@@ -97,7 +179,6 @@ class settings_json(ProtectedPage):
         web.header(u"Access-Control-Allow-Origin", u"*")
         web.header(u"Content-Type", u"application/json")
         return json.dumps(statsDisplayDef)
-
 
 class update(ProtectedPage):
     """Save user input to cli_control.json file"""
