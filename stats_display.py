@@ -83,7 +83,7 @@ class raw_valves_stats(ProtectedPage):
         dbLogActive = check_if_db_logger_active()
 
         if dbLogActive:
-            from db_logger import get_list_of_valves, estimate_valve_turnon_by_month, estimte_time_str_2_hour_float
+            from db_logger_valves import get_list_of_valves, estimate_valve_turnon_by_month, estimte_time_str_2_hour_float
 
             listOfValves = get_list_of_valves()
 
@@ -163,7 +163,7 @@ class settings(ProtectedPage):
         dbLogActive = check_if_db_logger_active()
 
         if dbLogActive:
-            from db_logger import estimate_number_of_turn_on_by_month
+            from db_logger_SIP_start import estimate_number_of_turn_on_by_month
 
             turnOnByMothStats = estimate_number_of_turn_on_by_month()
         else:
