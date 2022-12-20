@@ -21,7 +21,8 @@ from webpages import ProtectedPage
 # fmt: off
 urls.extend(
     [
-        u"/statset", u"plugins.stats_display.settings",
+        u"/stathome", u"plugins.stats_display.home",
+        u"/statstartsip", u"plugins.stats_display.turn_on_sip",
         u"/statjson", u"plugins.stats_display.settings_json",
         u"/statupdate", u"plugins.stats_display.update",
         u"/statrawval", u"plugins.stats_display.raw_valves_stats",
@@ -30,7 +31,7 @@ urls.extend(
 # fmt: on
 
 # Add this plugin to the plugins menu
-gv.plugin_menu.append([u"Statistics Display", u"/statset"])
+gv.plugin_menu.append([u"Statistics Display", u"/stathome"])
 
 statsDisplayDef = {}
 
@@ -60,6 +61,12 @@ zones.connect(on_zone_change)
 ################################################################################
 # Web pages:                                                                   #
 ################################################################################
+
+class home(ProtectedPage):
+    """Load an html page for entering cli_control commands"""
+
+    def GET(self):
+        return template_render.stats_display_home()
 
 def check_if_db_logger_active():
     # Check if DB logger is active
@@ -155,7 +162,7 @@ class raw_valves_stats(ProtectedPage):
 
         return template_render.stats_display_raw_valves(rawValvesData, listOfValves, rawValveId, minYear, minMonth, maxYear, maxMonth, datetime.datetime.now().year, datetime.datetime.now().month, stringX, stringY)
 
-class settings(ProtectedPage):
+class turn_on_sip(ProtectedPage):
     """Load an html page for entering cli_control commands"""
 
     def GET(self):
@@ -178,7 +185,7 @@ class settings(ProtectedPage):
             stringY = stringY +", "+ str(turnOnByMothStats[key])
         stringY = stringY[2:]
 
-        return template_render.stats_display(turnOnByMothStats, stringX, stringY)
+        return template_render.stats_display_turn_on_sip(turnOnByMothStats, stringX, stringY)
 
 
 class settings_json(ProtectedPage):

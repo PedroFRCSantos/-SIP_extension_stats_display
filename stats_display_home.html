@@ -1,0 +1,36 @@
+$def with()
+
+$var title: $_(u'Statistics Display Home')
+$var page: stats_display_home
+
+<script>
+	jQuery(document).ready(function () {
+		jQuery("button#homeButton").click(function () {
+			window.location = "/stathome";
+		});
+
+		jQuery("button#turnOnButton").click(function () {
+			window.location = "/statstartsip";
+		});
+
+		jQuery("button#valvStatButton").click(function () {
+			window.location = "/statrawval";
+		});
+	});
+</script>
+
+<div id="plugin">
+	<div>
+		<p>
+			<button class="execute" id="homeButton" type="button">Home</button>
+			<button class="execute" id="turnOnButton" type="button">Turn On SIP</button>
+			<button class="execute" id="valvStatButton" type="button">Valves Statistics</button>
+		</p>
+	</div>
+
+	<br />
+
+	Display statistics about data save in DB. This plug in requere to install DB Logger.
+
+	<br /><br />
+</div>

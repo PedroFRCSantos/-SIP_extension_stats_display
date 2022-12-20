@@ -9,7 +9,9 @@ Requirements:
 ##### List all plugin files below preceded by a blank line [file_name.ext path] relative to SIP directory #####
 
 stats_display.py plugins
-stats_display.html templates
+stats_display_home.html templates
+stats_display_raw_valves.html templates
+stats_display_turn_on_sip.html templates
 stats_display.json data (generated)
 chart.js static/scripts
 stats_display.manifest plugins/manifests

@@ -5,6 +5,18 @@ $var page: stats_display_raw_valves
 
 <script>
 	jQuery(document).ready(function () {
+		jQuery("button#homeButton").click(function () {
+			window.location = "/stathome";
+		});
+
+		jQuery("button#turnOnButton").click(function () {
+			window.location = "/statstartsip";
+		});
+
+		jQuery("button#valvStatButton").click(function () {
+			window.location = "/statrawval";
+		});
+
 		jQuery("button#buttonChangeValves").click(function () {
 			window.location = "/statrawval";
 		});
@@ -36,6 +48,16 @@ $var page: stats_display_raw_valves
 <script src="static/scripts/chart.js"></script>
 
 <div id="plugin">
+    <div>
+        <p>
+            <button class="execute" id="homeButton" type="button">Home</button>
+            <button class="execute" id="turnOnButton" type="button">Turn On SIP</button>
+            <button class="execute" id="valvStatButton" type="button">Valves Statistics</button>
+        </p>
+    </div>
+
+    <br />
+
 	<form action="./statrawval">
 		<select name="valveId">
 			<option value="0">Select Valves for Stats</option>
@@ -107,7 +129,7 @@ $var page: stats_display_raw_valves
 		const data = {
 			labels: labels,
 			datasets: [{
-				label: 'Number of turn on',
+				label: 'Time in hours valve on',
 				backgroundColor: 'rgb(0, 255, 0)',
 				borderColor: 'rgb(255, 99, 132)',
 				data: [${ stringY }],
