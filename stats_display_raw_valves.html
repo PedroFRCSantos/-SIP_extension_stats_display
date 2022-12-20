@@ -1,4 +1,4 @@
-$def with(rawValves, listOfValves, rawValveId, minYear, minMonth, maxYear, maxMonth, currentYear, currentMonth)
+$def with(rawValves, listOfValves, rawValveId, minYear, minMonth, maxYear, maxMonth, currentYear, currentMonth, stringX, stringY)
 
 $var title: $_(u'Statistics Display raw valves')
 $var page: stats_display_raw_valves
@@ -32,6 +32,8 @@ $var page: stats_display_raw_valves
 		background-color: #00ff00;
 	}
 </style>
+
+<script src="static/scripts/chart.js"></script>
 
 <div id="plugin">
 	<form action="./statrawval">
@@ -91,11 +93,44 @@ $var page: stats_display_raw_valves
 			<th>Time Active</th>
 		</tr>
 		$for curr in rawValves:
-			<tr>
-				<td>${curr}</td>
-				<td>${rawValves[str(curr)]}</td>
-			</tr>
+		<tr>
+			<td>${curr}</td>
+			<td>${rawValves[str(curr)]}</td>
+		</tr>
 	</table>
+
+	<br />
+
+	<script>
+		const labels = [${ stringX }];
+
+		const data = {
+			labels: labels,
+			datasets: [{
+				label: 'Number of turn on',
+				backgroundColor: 'rgb(0, 255, 0)',
+				borderColor: 'rgb(255, 99, 132)',
+				data: [${ stringY }],
+			}]
+		};
+
+		const config = {
+			type: 'bar',
+			data: data,
+			options: {}
+		};
+	</script>
+	<div>
+		<div>
+			<canvas id="myChart"></canvas>
+		</div>
+	</div>
+	<script>
+		const myChart = new Chart(
+			document.getElementById('myChart'),
+			config
+		);
+	</script>
 
 	<br />
 </div>

@@ -76,14 +76,14 @@ class raw_valves_stats(ProtectedPage):
 
     def GET(self):
         rawValvesData = []
+        listOfValves = []
 
         qdict = web.input()
 
         dbLogActive = check_if_db_logger_active()
 
         if dbLogActive:
-            from db_logger import get_list_of_valves
-            from db_logger import estimate_valve_turnon_by_month
+            from db_logger import get_list_of_valves, estimate_valve_turnon_by_month, estimte_time_str_2_hour_float
 
             listOfValves = get_list_of_valves()
 
@@ -144,7 +144,16 @@ class raw_valves_stats(ProtectedPage):
 
             rawValvesData = estimate_valve_turnon_by_month(rawValveId, minYear, minMonth, maxYear, maxMonth)
 
-        return template_render.stats_display_raw_valves(rawValvesData, listOfValves, rawValveId, minYear, minMonth, maxYear, maxMonth, datetime.datetime.now().year, datetime.datetime.now().month)
+        stringX = ""
+        for key in rawValvesData:
+            stringX = stringX +" "+ str(key.replace('-', '')) +","
+
+        stringY = ""
+        for key in rawValvesData:
+            stringY = stringY +", "+ str(estimte_time_str_2_hour_float(rawValvesData[key]))
+        stringY = stringY[2:]
+
+        return template_render.stats_display_raw_valves(rawValvesData, listOfValves, rawValveId, minYear, minMonth, maxYear, maxMonth, datetime.datetime.now().year, datetime.datetime.now().month, stringX, stringY)
 
 class settings(ProtectedPage):
     """Load an html page for entering cli_control commands"""
