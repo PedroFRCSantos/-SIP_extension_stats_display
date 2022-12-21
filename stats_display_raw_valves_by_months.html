@@ -20,6 +20,14 @@ $var page: stats_display_raw_valves
 		jQuery("button#buttonChangeValves").click(function () {
 			window.location = "/statrawval";
 		});
+
+		jQuery("button#valveStatByMonth").click(function () {
+			window.location = "/statrawval";
+		});
+
+		jQuery("button#valveStatByDay").click(function () {
+			window.location = "/statrawvalday";
+		});
 	});
 </script>
 
@@ -48,13 +56,18 @@ $var page: stats_display_raw_valves
 <script src="static/scripts/chart.js"></script>
 
 <div id="plugin">
-    <div>
-        <p>
-            <button class="execute" id="homeButton" type="button">Home</button>
-            <button class="execute" id="turnOnButton" type="button">Turn On SIP</button>
-            <button class="execute" id="valvStatButton" type="button">Valves Statistics</button>
-        </p>
-    </div>
+	<div>
+		<p>
+			<button class="execute" id="homeButton" type="button">Home</button>
+			<button class="execute" id="turnOnButton" type="button">Turn On SIP</button>
+			<button class="execute" id="valvStatButton" type="button">Valves Statistics</button>
+		</p>
+
+		<p style="text-align:center">
+			<button class="execute" id="valveStatByMonth" type="button">By Month</button>
+			<button class="execute" id="valveStatByDay" type="button">By Day</button>
+		</p>
+	</div>
 
     <br />
 

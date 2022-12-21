@@ -1,0 +1,143 @@
+$def with(rawValves, listOfValves, rawValveId, minYear, minMonth, minDay, maxYear, maxMonth, maxDay, currentYear, currentMonth, currentDay, stringX, stringY)
+
+$var title: $_(u'Statistics Display raw valves by day')
+$var page: stats_display_raw_valves_by_day
+
+<script>
+    jQuery(document).ready(function () {
+        jQuery("button#homeButton").click(function () {
+            window.location = "/stathome";
+        });
+
+        jQuery("button#turnOnButton").click(function () {
+            window.location = "/statstartsip";
+        });
+
+        jQuery("button#valvStatButton").click(function () {
+            window.location = "/statrawval";
+        });
+
+        jQuery("button#buttonChangeValves").click(function () {
+            window.location = "/statrawval";
+        });
+
+		jQuery("button#valveStatByMonth").click(function () {
+			window.location = "/statrawval";
+		});
+
+		jQuery("button#valveStatByDay").click(function () {
+			window.location = "/statrawvalday";
+		});
+    });
+</script>
+
+<style>
+    .columnName {
+        text-align: center;
+    }
+
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #00ff00;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #00ff00;
+    }
+</style>
+
+<script src="static/scripts/chart.js"></script>
+
+<div id="plugin">
+    <div>
+        <p>
+            <button class="execute" id="homeButton" type="button">Home</button>
+            <button class="execute" id="turnOnButton" type="button">Turn On SIP</button>
+            <button class="execute" id="valvStatButton" type="button">Valves Statistics</button>
+        </p>
+
+        <p style="text-align:center">
+            <button class="execute" id="valveStatByMonth" type="button">By Month</button>
+            <button class="execute" id="valveStatByDay" type="button">By Day</button>
+        </p>
+    </div>
+
+    <br />
+
+    <form action="./statrawvalday">
+        <select name="valveId">
+            <option value="0">Select Valves for Stats</option>
+            $for currValve in listOfValves:
+                $if currValve[0] == rawValveId:
+                    <option value="${currValve[0]}" selected="selected">${currValve[1]}</option>
+                $else:
+                    <option value="${currValve[0]}">${currValve[1]}</option>
+        </select>
+
+        Show stats from
+
+        <input type="date" id="dateMin" name="dateMin" value="${str(minYear)}-${str(minMonth).zfill(2)}-${str(minDay).zfill(2)}">
+
+        To
+
+        <input type="date" id="dateMax" name="dateMax" value="${str(maxYear)}-${str(maxMonth).zfill(2)}-${str(maxDay).zfill(2)}">
+
+        <button id="buttonChangeValves">Reload</button>
+    </form>
+
+    <br />
+
+    <table>
+        <tr>
+            <th>Date:</th>
+            <th>Time Active</th>
+        </tr>
+        $for curr in rawValves:
+        <tr>
+            <td>${curr}</td>
+            <td>${rawValves[str(curr)]}</td>
+        </tr>
+    </table>
+
+    <br />
+
+    <script>
+        const labels = [${ stringX }];
+
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'Time in hours valve on',
+                backgroundColor: 'rgb(0, 255, 0)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: [${ stringY }],
+            }]
+        };
+
+        const config = {
+            type: 'bar',
+            data: data,
+            options: {}
+        };
+    </script>
+    <div>
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+    <script>
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+    </script>
+
+    <br />
+</div>

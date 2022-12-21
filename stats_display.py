@@ -26,6 +26,7 @@ urls.extend(
         u"/statjson", u"plugins.stats_display.settings_json",
         u"/statupdate", u"plugins.stats_display.update",
         u"/statrawval", u"plugins.stats_display.raw_valves_stats",
+        u"/statrawvalday", u"plugins.stats_display.raw_valves_stats_by_day",
     ]
 )
 # fmt: on
@@ -38,6 +39,7 @@ statsDisplayDef = {}
 # Read in the commands for this plugin from it's JSON file
 def load_commands():
     global statsDisplayDef
+
     try:
         with open(u"./data/stats_display.json", u"r") as f:
             statsDisplayDef = json.load(f)  # Read the commands from file
@@ -160,7 +162,74 @@ class raw_valves_stats(ProtectedPage):
             stringY = stringY +", "+ str(estimte_time_str_2_hour_float(rawValvesData[key]))
         stringY = stringY[2:]
 
-        return template_render.stats_display_raw_valves(rawValvesData, listOfValves, rawValveId, minYear, minMonth, maxYear, maxMonth, datetime.datetime.now().year, datetime.datetime.now().month, stringX, stringY)
+        return template_render.stats_display_raw_valves_by_months(rawValvesData, listOfValves, rawValveId, minYear, minMonth, maxYear, maxMonth, datetime.datetime.now().year, datetime.datetime.now().month, stringX, stringY)
+
+class raw_valves_stats_by_day(ProtectedPage):
+    """Load an html page for entering cli_control commands"""
+
+    def GET(self):
+        rawValvesData = []
+        listOfValves = []
+
+        qdict = web.input()
+
+        dbLogActive = check_if_db_logger_active()
+
+        if dbLogActive:
+            from db_logger_valves import get_list_of_valves, estimate_valve_turnon_by_day, estimte_time_str_2_hour_float
+
+            listOfValves = get_list_of_valves()
+
+            rawValveId = 0
+            qdict = web.input()
+            if u"valveId" in qdict:
+                try:
+                    rawValveId = int(qdict[u"valveId"])
+                    if rawValveId < 0:
+                        rawValveId = 0
+                except ValueError:
+                    pass
+
+            minYear = datetime.datetime.now().year
+            minMonth = datetime.datetime.now().month
+            minDay = 1
+
+            if u"dateMin" in qdict:
+                try:
+                    dateMinSplit = qdict[u"dateMin"].split('-')
+                    if len(dateMinSplit) == 3:
+                        minYear = int(dateMinSplit[0])
+                        minMonth = int(dateMinSplit[1])
+                        minDay = int(dateMinSplit[2])
+                except ValueError:
+                    pass
+
+            maxYear = datetime.datetime.now().year
+            maxMonth = datetime.datetime.now().month
+            maxDay = datetime.datetime.now().day
+
+            if u"dateMax" in qdict:
+                try:
+                    dateMinSplit = qdict[u"dateMax"].split('-')
+                    if len(dateMinSplit) == 3:
+                        maxYear = int(dateMinSplit[0])
+                        maxMonth = int(dateMinSplit[1])
+                        maxDay = int(dateMinSplit[2])
+                except ValueError:
+                    pass
+
+            rawValvesData = estimate_valve_turnon_by_day(rawValveId, minYear, minMonth, minDay, maxYear, maxMonth, maxDay)
+
+            stringX = ""
+            for key in rawValvesData:
+                stringX = stringX +" "+ str(key.replace('-', '')) +","
+
+            stringY = ""
+            for key in rawValvesData:
+                stringY = stringY +", "+ str(estimte_time_str_2_hour_float(rawValvesData[key]))
+            stringY = stringY[2:]
+
+        return template_render.stats_display_raw_valves_by_day(rawValvesData, listOfValves, rawValveId, minYear, minMonth, minDay, maxYear, maxMonth, maxDay, datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day, stringX, stringY)
 
 class turn_on_sip(ProtectedPage):
     """Load an html page for entering cli_control commands"""
