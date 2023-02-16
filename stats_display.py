@@ -92,9 +92,10 @@ class raw_valves_stats(ProtectedPage):
         dbLogActive = check_if_db_logger_active()
 
         if dbLogActive:
-            from db_logger_valves import get_list_of_valves, estimate_valve_turnon_by_month, estimte_time_str_2_hour_float
+            from db_logger_valves import get_list_of_valves, estimate_valve_turnon_by_month, estimte_time_str_2_hour_float, db_logger_read_definitions
 
-            listOfValves = get_list_of_valves()
+            dbDefinitions = db_logger_read_definitions()
+            listOfValves = get_list_of_valves(dbDefinitions)
 
             rawValveId = 0
             qdict = web.input()
@@ -151,7 +152,7 @@ class raw_valves_stats(ProtectedPage):
                 minYear = maxYear
                 minMonth = maxMonth
 
-            rawValvesData = estimate_valve_turnon_by_month(rawValveId, minYear, minMonth, maxYear, maxMonth)
+            rawValvesData = estimate_valve_turnon_by_month(rawValveId, minYear, minMonth, maxYear, maxMonth, dbDefinitions)
 
         stringX = ""
         for key in rawValvesData:
@@ -176,9 +177,10 @@ class raw_valves_stats_by_day(ProtectedPage):
         dbLogActive = check_if_db_logger_active()
 
         if dbLogActive:
-            from db_logger_valves import get_list_of_valves, estimate_valve_turnon_by_day, estimte_time_str_2_hour_float
+            from db_logger_valves import get_list_of_valves, estimate_valve_turnon_by_day, estimte_time_str_2_hour_float, db_logger_read_definitions
 
-            listOfValves = get_list_of_valves()
+            dbDefinitions = db_logger_read_definitions()
+            listOfValves = get_list_of_valves(dbDefinitions)
 
             rawValveId = 0
             qdict = web.input()
@@ -218,7 +220,7 @@ class raw_valves_stats_by_day(ProtectedPage):
                 except ValueError:
                     pass
 
-            rawValvesData = estimate_valve_turnon_by_day(rawValveId, minYear, minMonth, minDay, maxYear, maxMonth, maxDay)
+            rawValvesData = estimate_valve_turnon_by_day(rawValveId, minYear, minMonth, minDay, maxYear, maxMonth, maxDay, dbDefinitions)
 
             stringX = ""
             for key in rawValvesData:
@@ -239,9 +241,10 @@ class turn_on_sip(ProtectedPage):
         dbLogActive = check_if_db_logger_active()
 
         if dbLogActive:
-            from db_logger_SIP_start import estimate_number_of_turn_on_by_month
+            from db_logger_SIP_start import estimate_number_of_turn_on_by_month, db_logger_read_definitions
 
-            turnOnByMothStats = estimate_number_of_turn_on_by_month()
+            dbDefinitions = db_logger_read_definitions()
+            turnOnByMothStats = estimate_number_of_turn_on_by_month(dbDefinitions)
         else:
             turnOnByMothStats = {}
 
